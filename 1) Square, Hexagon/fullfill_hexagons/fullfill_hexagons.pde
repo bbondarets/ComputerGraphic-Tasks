@@ -1,52 +1,54 @@
-void drawHexagon(float x, float y, float gs) 
+void drawSquare(float x, float y, float size)
 {
   beginShape();
-  vertex(x - gs, y - sqrt(3) * gs);
-  vertex(x + gs, y - sqrt(3) * gs);
-  vertex(x + 2 * gs, y);
-  vertex(x + gs, y + sqrt(3) * gs);
-  vertex(x - gs, y + sqrt(3) * gs);
-  vertex(x - 2 * gs, y);
+  vertex(x, y);
+  vertex(x+size, y);
+  vertex(x+size, y-size);
+  vertex(x, y-size);
   endShape(CLOSE);
+}
+
+void drawHexagon(float x, float y, float size)
+{
+  beginShape();
+  vertex(x - size, y - sqrt(3) * size);
+  vertex(x + size, y - sqrt(3) * size);
+  vertex(x + 2 * size, y);
+  vertex(x + size, y + sqrt(3) * size);
+  vertex(x - size, y + sqrt(3) * size);
+  vertex(x - 2 * size, y);
+  endShape(CLOSE);
+}
+
+void fillThePlaneWithSquares(float size)
+{
+  for(float i=0; i<=860; i+=size)
+  {
+    for(float j=0; j<=480; j+=size)
+    {
+      drawSquare(i,j,size);
+    }
+  }
+}
+
+void fillThePlaneWithHexagones(float size)
+{
+  float colStep = 2*size*sqrt(3);
+  float rowStep = colStep*sqrt(3);
+  for(float i=0; i<=860; i+=rowStep)
+  {
+    for(float j=0; j<=480; j+=colStep)
+    {
+      drawHexagon(i,j,size);
+      drawHexagon(i+rowStep/2,j+colStep/2,size);
+    }
+  }
 }
 
 void setup() 
 {
   size(860, 480);
-  
-  for(int i=0; i<=860; i+=240)
-  {
-    for(int j=0; j<=480; j+=140)
-    {
-      drawHexagon(i,j,40);
-    }
-  }
-  for(int i=120; i<=860; i+=240)
-  {
-    for(int j=70; j<=480+140; j+=140)
-    {
-      drawHexagon(i,j,40);
-    }
-  }
-  
-  /*drawHexagon(0,0,40);
-  drawHexagon(240,0,40);
-  drawHexagon(480,0,40);
-  drawHexagon(720,0,40);
-  
-  drawHexagon(120, 70, 40);
-  drawHexagon(360, 70, 40);
-  drawHexagon(600, 70, 40);
-  drawHexagon(840, 70, 40);
-  
-  drawHexagon(0,140,40);
-  drawHexagon(240,140,40);
-  drawHexagon(480,140,40);
-  drawHexagon(720,140,40);
-  
-  drawHexagon(120, 210, 40);
-  drawHexagon(360, 210, 40);
-  drawHexagon(600, 210, 40);
-  drawHexagon(840, 210, 40);*/
+  //fillThePlaneWithSquares(30);
+  fillThePlaneWithHexagones(15);
 }
  
