@@ -94,12 +94,17 @@ void fillThePlaneWithDodecagones(float size)
   }
 }
 
+void drawSquare1(float x, float y, float size)
+{
+  
+}
+
 void fillThePlane(float size)
 {
   
   float rowStep = size/2+sqrt(3)*size+size*sqrt(3)/2+size;
   float colStep = sqrt(3)*(size/2)+size+size/2;
-  for(int i=0; i<960; i+=2*rowStep)
+  for(float i=0; i<960; i+=2*rowStep)
   {
     for(float j=0; j<580; j+=2*colStep)
     {
@@ -110,36 +115,49 @@ void fillThePlane(float size)
   
   float rowStep1 = 2*size*sqrt(3)+3*size+sqrt(3)*size;
   float colStep1 = size+2*size+sqrt(3)*size;
-  float sum=0.1;
   for(float i=0; i<960; i+=rowStep1)
   {
     for(float j=0; j<580; j+=colStep1)
     {
       //First Group of hexagones
-      drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2-sum, j+sqrt(3)*(size/2)+size+size/2, size);
-      drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2+size*sqrt(3)+size-sum, j+sqrt(3)*(size/2)+size+size/2, size);
+      drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2, j+sqrt(3)*(size/2)+size+size/2, size);
+      drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2+size*sqrt(3)+size, j+sqrt(3)*(size/2)+size+size/2, size);
       
       //Second Group of Hexagones
-      drawHexagon1(i+size+size*sqrt(3)-sum,j,size);
-      drawHexagon1(i+size+size*sqrt(3)+size+sqrt(3)*size-sum,j,size);
+      drawHexagon1(i+size+size*sqrt(3),j,size);
+      drawHexagon1(i+size+size*sqrt(3)+size+sqrt(3)*size,j,size);
     }
-    sum+=0.9;
   }
-  //drawSquare(0,sqrt(3)*(size/2)+size+size/2,size);
   
   float rowStep2=3*size+size*sqrt(3);
   float colStep2=2*sqrt(3)*size+2*size+sqrt(3)*size+size;
-  float sum1=0.1;
   for(float i=0; i<960; i+=colStep2)
   {
     for(float j=0; j<580; j+=rowStep2)
     {
-      drawSquare(i-sum1,j+sqrt(3)*(size/2)+size+size/2,size);
-      drawSquare(i+size/2+sqrt(3)*size+size+size*sqrt(3)/2-sum1,j,size);
+      drawSquare(i,j+sqrt(3)*(size/2)+size+size/2,size);
+      drawSquare(i+size/2+sqrt(3)*size+size+size*sqrt(3)/2,j,size);
     }
-    sum1+=0.9;
   }
   
+  translate(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,size+size*(sqrt(3)-1)/4);
+  rotate(PI/6);
+  drawSquare(0,0,size);
+  rotate(-PI/6);
+  translate(3*sqrt(3)*size+3*size,0);
+  rotate(PI/6);
+  drawSquare(0,0,size);
+  rotate(-PI/6);
+  translate(3*sqrt(3)*size+3*size,0);
+  rotate(PI/6);
+  drawSquare(0,0,size);
+  rotate(-PI/6);
+  translate(3*sqrt(3)*size+3*size,0);
+  rotate(PI/6);
+  drawSquare(0,0,size);
+  
+  translate(-(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4)-4*(3*sqrt(3)*size+3*size),-(size+size*(sqrt(3)-1)/4));
+  drawSquare(0,0,size);
 }
 
 void setup() 
