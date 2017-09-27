@@ -107,14 +107,26 @@ void fillThePlane(float size)
       drawDodecagon(i+size/2+sqrt(3)*size+size*sqrt(3)/2+size,j+sqrt(3)*(size/2)+size+size/2,size);
     }
   }
-  drawHexagon1(size/2+sqrt(3)*size/2,sqrt(3)*(size/2)+size+size/2,size);
   
- // drawDodecagon(0,0,size);
+  float rowStep1 = 2*size*sqrt(3)+3*size+sqrt(3)*size;
+  float colStep1 = size+2*size+sqrt(3)*size;
+  float sum=0.1;
+  for(float i=0; i<960; i+=rowStep1)
+  {
+    for(float j=0; j<580; j+=colStep1)
+    {
+      //First Group of hexagones
+      drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2-sum, j+sqrt(3)*(size/2)+size+size/2, size);
+      drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2+size*sqrt(3)+size-sum, j+sqrt(3)*(size/2)+size+size/2, size);
+      
+      //Second Group of Hexagones
+      drawHexagon1(i+size+size*sqrt(3)-sum,j,size);
+      drawHexagon1(i+size+size*sqrt(3)+size+sqrt(3)*size-sum,j,size);
+    }
+    sum+=0.9;
+  }
+
  // drawSquare(0,sqrt(3)*(size/2)+size+size/2,size);
- // drawDodecagon(0,2*(sqrt(3)*(size/2)+size)+size,size);
-  
-  
- // drawDodecagon(size/2+sqrt(3)*size+size*sqrt(3)/2+size,sqrt(3)*(size/2)+size+size/2,size);
   
 }
 
