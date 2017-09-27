@@ -22,6 +22,25 @@ void drawHexagon(float x, float y, float size)
   endShape(CLOSE);
 }
 
+void drawDodecagon(float x, float y, float size)
+{
+  float halfSize = size/2;
+  beginShape();
+  vertex(x - halfSize, y - sqrt(3) * halfSize-size);
+  vertex(x + halfSize, y - sqrt(3) * halfSize-size);
+  vertex(x + halfSize + halfSize * sqrt(3),y - size - halfSize);
+  vertex(x + size +size*sqrt(3)/2, y-halfSize);
+  vertex(x + size +size*sqrt(3)/2, y+halfSize);//
+  vertex(x + halfSize + halfSize * sqrt(3),y + size + halfSize);
+  vertex(x + halfSize, y + sqrt(3) * halfSize+size);
+  vertex(x - halfSize, y + sqrt(3) * halfSize+size);
+  vertex(x - halfSize - halfSize * sqrt(3),y + size + halfSize);
+  vertex(x - size - size*sqrt(3)/2, y+halfSize);
+  vertex(x - size - size*sqrt(3)/2, y-halfSize);
+  vertex(x - halfSize - halfSize * sqrt(3),y - size - halfSize);
+  endShape(CLOSE);
+}
+
 void drawSquare1(float x, float y, float size)
 {
   translate(x,y);
@@ -47,25 +66,6 @@ void drawHexagon1(float x, float y, float size)
   drawHexagon(0,0,size);
   rotate(-PI/2);
   translate(-x,-y);
-}
-
-void drawDodecagon(float x, float y, float size)
-{
-  float halfSize = size/2;
-  beginShape();
-  vertex(x - halfSize, y - sqrt(3) * halfSize-size);
-  vertex(x + halfSize, y - sqrt(3) * halfSize-size);
-  vertex(x + halfSize + halfSize * sqrt(3),y - size - halfSize);
-  vertex(x + size +size*sqrt(3)/2, y-halfSize);
-  vertex(x + size +size*sqrt(3)/2, y+halfSize);//
-  vertex(x + halfSize + halfSize * sqrt(3),y + size + halfSize);
-  vertex(x + halfSize, y + sqrt(3) * halfSize+size);
-  vertex(x - halfSize, y + sqrt(3) * halfSize+size);
-  vertex(x - halfSize - halfSize * sqrt(3),y + size + halfSize);
-  vertex(x - size - size*sqrt(3)/2, y+halfSize);
-  vertex(x - size - size*sqrt(3)/2, y-halfSize);
-  vertex(x - halfSize - halfSize * sqrt(3),y - size - halfSize);
-  endShape(CLOSE);
 }
 
 void fillThePlaneWithSquares(float size)
@@ -110,23 +110,24 @@ void fillThePlaneWithDodecagones(float size)
 
 void fillThePlane(float size)
 {
-  
-  float rowStep = size/2+sqrt(3)*size+size*sqrt(3)/2+size;
-  float colStep = sqrt(3)*(size/2)+size+size/2;
-  for(float i=0; i<960; i+=2*rowStep)
+  //fill(255,0,0);
+  float rowStep = sqrt(3)*(size/2)+size+size/2;
+  float colStep = size/2+sqrt(3)*size+size*sqrt(3)/2+size;
+  for(float i=0; i<960; i+=2*colStep)
   {
-    for(float j=0; j<580; j+=2*colStep)
+    for(float j=0; j<580; j+=2*rowStep)
     {
       drawDodecagon(i,j,size);
       drawDodecagon(i+size/2+sqrt(3)*size+size*sqrt(3)/2+size,j+sqrt(3)*(size/2)+size+size/2,size);
     }
   }
   
-  float rowStep1 = 2*size*sqrt(3)+3*size+sqrt(3)*size;
-  float colStep1 = size+2*size+sqrt(3)*size;
-  for(float i=0; i<960; i+=rowStep1)
+  //fill(255,255,0);
+  float rowStep1 = size+2*size+sqrt(3)*size;
+  float colStep1 = 2*size*sqrt(3)+3*size+sqrt(3)*size;
+  for(float i=0; i<960; i+=colStep1)
   {
-    for(float j=0; j<580; j+=colStep1)
+    for(float j=0; j<580; j+=rowStep1)
     {
       //First Group of hexagones
       drawHexagon1(i-(size+sqrt(3)*size)+size/2+sqrt(3)*size/2, j+sqrt(3)*(size/2)+size+size/2, size);
@@ -138,6 +139,7 @@ void fillThePlane(float size)
     }
   }
   
+  //fill(0,255,0);
   float rowStep2=3*size+size*sqrt(3);
   float colStep2=2*sqrt(3)*size+2*size+sqrt(3)*size+size;
   for(float i=0; i<960; i+=colStep2)
@@ -155,16 +157,17 @@ void fillThePlane(float size)
   {
     for(float j=0; j<580; j+=rowStep3)
     {
+      //fill(0,0,255);
       //Squares at +30 degre
       drawSquare1(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,j+size+size*(sqrt(3)-1)/4,size);
       drawSquare1(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4 + size +sqrt(3)*size+sqrt(3)*size/2+size/2,j+size+size*(sqrt(3)-1)/4 + 1.5*size+size*sqrt(3)/2,size);
       
+      //fill(120,185,255);
       //Squares at -30 degre
       drawSquare2(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4 + sqrt(3)*size+size+sqrt(3)*size/2+size/2,j+size+size*(sqrt(3)-1)/4,size);
       drawSquare2(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,j+size+size*(sqrt(3)-1)/4+1.5*size+size*sqrt(3)/2,size);
     }
   }
-  drawSquare2(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4 + sqrt(3)*size+size+sqrt(3)*size/2+size/2,size+size*(sqrt(3)-1)/4,size);
 }
 
 void setup() 
