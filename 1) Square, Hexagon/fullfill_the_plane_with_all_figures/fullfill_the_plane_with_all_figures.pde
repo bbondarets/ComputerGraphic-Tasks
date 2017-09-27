@@ -125,8 +125,20 @@ void fillThePlane(float size)
     }
     sum+=0.9;
   }
-
- // drawSquare(0,sqrt(3)*(size/2)+size+size/2,size);
+  //drawSquare(0,sqrt(3)*(size/2)+size+size/2,size);
+  
+  float rowStep2=3*size+size*sqrt(3);
+  float colStep2=2*sqrt(3)*size+2*size+sqrt(3)*size+size;
+  float sum1=0.1;
+  for(float i=0; i<960; i+=colStep2)
+  {
+    for(float j=0; j<580; j+=rowStep2)
+    {
+      drawSquare(i-sum1,j+sqrt(3)*(size/2)+size+size/2,size);
+      drawSquare(i+size/2+sqrt(3)*size+size+size*sqrt(3)/2-sum1,j,size);
+    }
+    sum1+=0.9;
+  }
   
 }
 
