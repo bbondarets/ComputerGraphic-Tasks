@@ -9,15 +9,6 @@ void drawSquare(float x, float y, float size)
   endShape(CLOSE);
 }
 
-void drawSquare1(float x, float y, float size)
-{
-  translate(x,y);
-  rotate(PI/6.0);
-  drawSquare(0,0,size);
-  rotate(-PI/6.0);
-  translate(-x,-y);
-}
-
 void drawHexagon(float x, float y, float size)
 {
   float halfSize = size/2;
@@ -31,12 +22,30 @@ void drawHexagon(float x, float y, float size)
   endShape(CLOSE);
 }
 
+void drawSquare1(float x, float y, float size)
+{
+  translate(x,y);
+  rotate(PI/6);
+  drawSquare(0,0,size);
+  rotate(-PI/6);
+  translate(-x,-y);
+}
+
+void drawSquare2(float x, float y, float size)
+{
+  translate(x,y);
+  rotate(-PI/6);
+  drawSquare(0,0,size);
+  rotate(PI/6);
+  translate(-x,-y);
+}
+
 void drawHexagon1(float x, float y, float size)
 {
   translate(x,y);
-  rotate(PI/2.0);
+  rotate(PI/2);
   drawHexagon(0,0,size);
-  rotate(-PI/2.0);
+  rotate(-PI/2);
   translate(-x,-y);
 }
 
@@ -140,25 +149,22 @@ void fillThePlane(float size)
     }
   }
   
-  drawSquare1(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,size+size*(sqrt(3)-1)/4,size);
-  drawSquare1(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4+3*sqrt(3)*size+3*size,size+size*(sqrt(3)-1)/4,size);
-  drawSquare1(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4+3*sqrt(3)*size+3*size+3*sqrt(3)*size+3*size,size+size*(sqrt(3)-1)/4,size);
-  /*translate(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,size+size*(sqrt(3)-1)/4);
-  rotate(PI/6);
-  drawSquare(0,0,size);
-  rotate(-PI/6);
-  translate(3*sqrt(3)*size+3*size,0);
-  rotate(PI/6);
-  drawSquare(0,0,size);
-  rotate(-PI/6);
-  translate(3*sqrt(3)*size+3*size,0);
-  rotate(PI/6);
-  drawSquare(0,0,size);
-  rotate(-PI/6);
-  translate(3*sqrt(3)*size+3*size,0);
-  rotate(PI/6);
-  drawSquare(0,0,size);*/
-  
+  float rowStep3=3*size+sqrt(3)*size;
+  float colStep3=3*sqrt(3)*size+3*size;
+  for(float i=0; i<960; i+=colStep3)
+  {
+    for(float j=0; j<580; j+=rowStep3)
+    {
+      //Squares at +30 degre
+      drawSquare1(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,j+size+size*(sqrt(3)-1)/4,size);
+      drawSquare1(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4 + size +sqrt(3)*size+sqrt(3)*size/2+size/2,j+size+size*(sqrt(3)-1)/4 + 1.5*size+size*sqrt(3)/2,size);
+      
+      //Squares at -30 degre
+      drawSquare2(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4 + sqrt(3)*size+size+sqrt(3)*size/2+size/2,j+size+size*(sqrt(3)-1)/4,size);
+      drawSquare2(i+size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,j+size+size*(sqrt(3)-1)/4+1.5*size+size*sqrt(3)/2,size);
+    }
+  }
+  drawSquare2(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4 + sqrt(3)*size+size+sqrt(3)*size/2+size/2,size+size*(sqrt(3)-1)/4,size);
 }
 
 void setup() 
