@@ -9,15 +9,6 @@ void drawSquare(float x, float y, float size)
   endShape(CLOSE);
 }
 
-void drawSquare1(float x, float y, float size)
-{
-  translate(x,y);
-  rotate(PI/6.0);
-  drawSquare(0,0,size);
-  rotate(-PI/6.0);
-  translate(-x,-y);
-}
-
 void drawHexagon(float x, float y, float size)
 {
   float halfSize = size/2;
@@ -33,11 +24,15 @@ void drawHexagon(float x, float y, float size)
 
 void drawHexagon1(float x, float y, float size)
 {
-  translate(x,y);
-  rotate(PI/2.0);
-  drawHexagon(0,0,size);
-  rotate(-PI/2.0);
-  translate(-x,-y);
+  float halfSize = size/2;
+  beginShape();
+  vertex(x - sqrt(3) * halfSize, y - halfSize);
+  vertex(x - sqrt(3) * halfSize, y + halfSize);
+  vertex(x, y+size);
+  vertex(x + sqrt(3) * halfSize, y + halfSize);
+  vertex(x + sqrt(3) * halfSize, y - halfSize);
+  vertex(x, y - size);
+  endShape(CLOSE);
 }
 
 void drawDodecagon(float x, float y, float size)
@@ -99,6 +94,15 @@ void fillThePlaneWithDodecagones(float size)
   }
 }
 
+void drawSquare1(float x, float y, float size)
+{
+  translate(x,y);
+  rotate(PI/6);
+  drawSquare(0,0,size);
+  rotate(-PI/6);
+  translate(-x,-y);
+}
+
 void fillThePlane(float size)
 {
   
@@ -140,9 +144,6 @@ void fillThePlane(float size)
     }
   }
   
-  drawSquare1(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,size+size*(sqrt(3)-1)/4,size);
-  drawSquare1(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4+3*sqrt(3)*size+3*size,size+size*(sqrt(3)-1)/4,size);
-  drawSquare1(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4+3*sqrt(3)*size+3*size+3*sqrt(3)*size+3*size,size+size*(sqrt(3)-1)/4,size);
   /*translate(size+size*sqrt(3)/2+size*(sqrt(3)-1)/4,size+size*(sqrt(3)-1)/4);
   rotate(PI/6);
   drawSquare(0,0,size);
