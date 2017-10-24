@@ -1,25 +1,3 @@
-void drawNotParametricParabolaPrimitive(float a)
-{
-  float prevx = width/2;
-  float prevy = height/2;
-  float inerse_prevy = height/2;
-  for(float x=width/2; x<=width; x+=15)
-  {
-    float newy = 2*sqrt(a*(x-width/2)/15);
-    stroke(255,0,0);
-    line(prevx,prevy,x,height/2-newy*15);
-    line(prevx,inerse_prevy,x,height/2+newy*15);
-    prevx = x;
-    prevy = height/2-newy*15;
-    inerse_prevy=height/2+newy*15;
-  }
-}
-
-void drawParametricParabolaPrimitive(float a, float delta_theta)
-{
-  
-}
-
 void drawCoordinatePlot()
 {
   int halfHeight = height/2;
@@ -57,12 +35,67 @@ void drawCoordinatePlot()
   }
 }
 
+void drawNotParametricParabola(float a, int quantity)
+{
+  float[] xpoints = new float[quantity];
+  float[] ypoints = new float[quantity];
+  float xstep = (float)26/quantity;
+  float x=0;
+  for(int i=0; i<quantity; ++i)
+  {
+    xpoints[i] = x;
+    ypoints[i] = 2*sqrt(a*x);
+    x+=xstep;
+  }
+
+  float prev_x = width/2+xpoints[0]*15;
+  float prev_y = height/2-ypoints[0]*15;
+  float inverse_prev_y = height/2+ypoints[0]*15;
+  float cur_x, cur_y, inverse_cur_y;
+  for(int i=1; i<quantity; ++i)
+  {
+    cur_x = width/2+xpoints[i]*15;
+    cur_y = height/2-ypoints[i]*15;
+    inverse_cur_y=height/2+ypoints[i]*15;
+    stroke(255,0,0);
+    line(prev_x,prev_y,cur_x,cur_y);
+    line(prev_x,inverse_prev_y,cur_x,inverse_cur_y);
+    prev_x = cur_x;
+    prev_y = cur_y;
+    inverse_prev_y = inverse_cur_y;
+  }
+}
+
+
+void drawNotParametricParabolaPrimitive(float a)
+{
+  float prevx = width/2;
+  float prevy = height/2;
+  float inerse_prevy = height/2;
+  for(float x=width/2; x<=width; x++)
+  {
+    float newy = 2*sqrt(a*(x-width/2)/15);
+    stroke(255,0,0);
+    line(prevx,prevy,x,height/2-newy*15);
+    line(prevx,inerse_prevy,x,height/2+newy*15);
+    prevx = x;
+    prevy = height/2-newy*15;
+    inerse_prevy=height/2+newy*15;
+  }
+}
+
+void drawParametricParabolaPrimitive(float a, float delta_theta)
+{
+  
+}
+
 void setup()
 {
   background(255, 255, 255);
   size(800,700);
   drawCoordinatePlot();
-  drawNotParametricParabolaPrimitive(1);
+  drawNotParametricParabola(1,10000);
+  //drawNotParametricParabolaPrimitive(1);
   //println("Час для обрахунку непараметричного задання:"+0.56);
   //println("Час для обрахунку параметричного задання:"+0.13);
 }
