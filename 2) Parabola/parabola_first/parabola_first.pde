@@ -41,13 +41,16 @@ void drawNotParametricParabola(float a, int quantity)
   float[] ypoints = new float[quantity];
   float xstep = (float)((width/2)/15+15)/quantity;
   float x=0;
+  int calculating_start_time = millis();
   for(int i=0; i<quantity; ++i)
   {
     xpoints[i] = x;
     ypoints[i] = 2*sqrt(a*x);
     x+=xstep;
   }
-
+  println("Час для обрахунку непараметричного задання:"+(millis()-calculating_start_time));
+  
+  int drawing_start_time=millis();
   float prev_x = width/2+xpoints[0]*15;
   float prev_y = height/2-ypoints[0]*15;
   float inverse_prev_y = height/2+ypoints[0]*15;
@@ -64,6 +67,7 @@ void drawNotParametricParabola(float a, int quantity)
     prev_y = cur_y;
     inverse_prev_y = inverse_cur_y;
   }
+  println("Час для малювання непараметричного задання:"+(millis()-drawing_start_time));
 }
 
 void drawParametricParabola(float a, float delta_theta, int quantity)
@@ -127,6 +131,6 @@ void setup()
   drawNotParametricParabola(1,1000);
   drawParametricParabola(1,1,1000);
   //drawNotParametricParabolaPrimitive(1);
-  //println("Час для обрахунку непараметричного задання:"+0.56);
+  //
   //println("Час для обрахунку параметричного задання:"+0.13);
 }
