@@ -41,12 +41,12 @@ void drawNotParametricParabola(float a, int quantity)
   float[] xpoints = new float[quantity];
   float[] ypoints = new float[quantity];
   //float xstep = (float)((width/2)/15+15)/quantity;
-  float step = 1;
+  float xstep = 1;
   float x=0;
   for(int i=0; i<quantity; ++i)
   {
-    ypoints[i] = x;
-    xpoints[i] = 2*sqrt(a*x);
+    xpoints[i] = x;
+    ypoints[i] = pow(x,2)/(4*a);
     x+=xstep;
     delay(1);
   }
