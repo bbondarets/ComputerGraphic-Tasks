@@ -44,8 +44,8 @@ void drawNotParametricParabola(float a, int quantity)
   float x=0;
   for(int i=0; i<quantity; ++i)
   {
-    xpoints[i] = x;
-    ypoints[i] = 2*sqrt(a*x);
+    ypoints[i] = x;
+    xpoints[i] = 2*sqrt(a*x);
     x+=xstep;
   }
   println("Час для обрахунку непараметричного задання:"+(millis()-calculating_start_time));
@@ -53,19 +53,19 @@ void drawNotParametricParabola(float a, int quantity)
   int drawing_start_time=millis();
   float prev_x = width/2+xpoints[0]*15;
   float prev_y = height/2-ypoints[0]*15;
-  float inverse_prev_y = height/2+ypoints[0]*15;
-  float cur_x, cur_y, inverse_cur_y;
+  float inverse_prev_x = width/2-xpoints[0]*15;
+  float cur_x, cur_y, inverse_cur_x;
   for(int i=1; i<quantity; ++i)
   {
     cur_x = width/2+xpoints[i]*15;
     cur_y = height/2-ypoints[i]*15;
-    inverse_cur_y=height/2+ypoints[i]*15;
+    inverse_cur_x=width/2-xpoints[i]*15;
     stroke(255,0,0);
     line(prev_x,prev_y,cur_x,cur_y);
-    line(prev_x,inverse_prev_y,cur_x,inverse_cur_y);
+    //line(inverse_prev_x,prev_y,inverse_cur_x,cur_y);
     prev_x = cur_x;
     prev_y = cur_y;
-    inverse_prev_y = inverse_cur_y;
+    inverse_prev_x = inverse_cur_x;
   }
   println("Час для малювання непараметричного задання:"+(millis()-drawing_start_time));
 }
@@ -79,27 +79,27 @@ void drawParametricParabola(float a, float delta_theta, int quantity)
   ypoints[0]=0;
   for(int i=1; i<quantity; ++i)
   {
-    xpoints[i] = xpoints[i-1]+ypoints[i-1]*delta_theta+a*delta_theta;
-    ypoints[i] = ypoints[i-1]+2*a*delta_theta;
+    ypoints[i] = ypoints[i-1]+xpoints[i-1]*delta_theta+a*delta_theta;
+    xpoints[i] = xpoints[i-1]+2*a*delta_theta;
   }
   println("Час для обрахунку параметричного задання:"+(millis()-calculating_start_time));
   
   int drawing_start_time=millis();
   float prev_x = width/2+xpoints[0]*15;
   float prev_y = height/2-ypoints[0]*15;
-  float inverse_prev_y = height/2+ypoints[0]*15;
-  float cur_x, cur_y, inverse_cur_y;
+  float inverse_prev_x = width/2-xpoints[0]*15;
+  float cur_x, cur_y, inverse_cur_x;
   for(int i=1; i<quantity; ++i)
   {
     cur_x = width/2+xpoints[i]*15;
     cur_y = height/2-ypoints[i]*15;
-    inverse_cur_y=height/2+ypoints[i]*15;
+    inverse_cur_x=width/2-xpoints[i]*15;
     stroke(0,0,255);
     line(prev_x,prev_y,cur_x,cur_y);
-    line(prev_x,inverse_prev_y,cur_x,inverse_cur_y);
+    line(inverse_prev_x,prev_y,inverse_cur_x,cur_y);
     prev_x = cur_x;
     prev_y = cur_y;
-    inverse_prev_y = inverse_cur_y;
+    inverse_prev_x = inverse_cur_x;
   }
   println("Час для малювання параметричного задання:"+(millis()-drawing_start_time));
 }
