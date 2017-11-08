@@ -156,11 +156,11 @@ void setup()
   size(800,700);
   drawCoordinatePlot();
   
-  int size = 90;
+  int size = 100;
   float[] xpoints = new float[size];
   float[] ypoints1 = new float[size];//Parametric
   float[] ypoints2 = new float[size];//Not parametric
-  drawParametricParabola(1,0.5,size,xpoints,ypoints1);
+  drawParametricParabola(1,0.33,size,xpoints,ypoints1);
   drawNotParametricParabola(1,size,xpoints,ypoints2);
   
   float[] norma_vec = new float[size];
