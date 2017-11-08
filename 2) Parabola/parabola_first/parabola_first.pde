@@ -127,16 +127,40 @@ float calculate_vec_norma(float[] vec, int lenght)
    return norma;
 }
 
+float integral(float b, int quantity, float[] xpoints, float[] ypoints)
+{
+  int count = 0;
+  for(int i=0; i<quantity; ++i)
+  {
+    if(xpoints[i]<=b)
+    {
+      ++count;
+    }
+    else
+    {
+      break;
+    }
+  }
+  float h=(xpoints[count]-xpoints[0])/count;
+  float q=(ypoints[0]+ypoints[count])/2;
+  for(int i=0; i<count; ++i)
+  {
+    q+=ypoints[i];
+  }
+  return q*h;
+}
+
 void setup()
 {
   background(255, 255, 255);
   size(800,700);
   drawCoordinatePlot();
-  int size = 100;
+  
+  int size = 90;
   float[] xpoints = new float[size];
   float[] ypoints1 = new float[size];//Parametric
   float[] ypoints2 = new float[size];//Not parametric
-  drawParametricParabola(1,0.33,size,xpoints,ypoints1);
+  drawParametricParabola(1,0.5,size,xpoints,ypoints1);
   drawNotParametricParabola(1,size,xpoints,ypoints2);
   
   float[] norma_vec = new float[size];
@@ -151,5 +175,14 @@ void setup()
   float norma_main = norma/parametric_norma;
   println("Норма: "+norma_main);
   println("Відсоткове співвідношення: "+norma_main*100+" %");
-  //drawNotParametricParabolaPrimitive(1);
+  
+  float area_start_point = 0;
+  float area_end_point = 20;
+  stroke(0,255,0);
+  line(width/2+area_start_point*15,0,width/2+area_start_point*15,height);
+  line(width/2+area_end_point*15,0,width/2+area_end_point*15,height);
+  float parametric_integral = integral(area_end_point,size,xpoints,ypoints1);
+  float notparametric_integral = integral(area_end_point,size,xpoints,ypoints2);
+  println("Площа параметричного задання: "+parametric_integral);
+  println("Площа непараметричного задання: "+notparametric_integral);
 }
