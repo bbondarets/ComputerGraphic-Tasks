@@ -35,18 +35,25 @@ void drawCoordinatePlot()
   }
 }
 
-void drawNotParametricParabola(float a, int quantity)
+void drawNotParametricParabola(float a, int quantity, float[] xpoints)
 {
   int calculating_start_time = millis();
-  float[] xpoints = new float[quantity];
+  //float[] xpoints = new float[quantity];
   float[] ypoints = new float[quantity];
-  float xstep = (float)((width/2)/15+15)/quantity;
-  float x=0;
+  //float xstep = (float)((width/2)/15+15)/quantity;
+  //float x=0;
   for(int i=0; i<quantity; ++i)
   {
-    xpoints[i] = x;
-    ypoints[i] = 2*sqrt(a*x);
-    x+=xstep;
+    //xpoints[i] = x;
+    //ypoints[i] = 2*sqrt(a*x);
+    ypoints[i] = 2*sqrt(a*xpoints[i]);
+    //x+=xstep;
+    delay(1);
+  }
+  println("Непараметричні точки");
+  for(int i=0; i<5; ++i)
+  {
+    println(xpoints[i] + "-" + ypoints[i]);
   }
   println("Час для обрахунку непараметричного задання:"+(millis()-calculating_start_time));
   
@@ -66,11 +73,12 @@ void drawNotParametricParabola(float a, int quantity)
     prev_x = cur_x;
     prev_y = cur_y;
     inverse_prev_y = inverse_cur_y;
+    delay(1);
   }
   println("Час для малювання непараметричного задання:"+(millis()-drawing_start_time));
 }
 
-void drawParametricParabola(float a, float delta_theta, int quantity)
+float[] drawParametricParabola(float a, float delta_theta, int quantity)
 {
   int calculating_start_time = millis();
   float[] xpoints = new float[quantity];
@@ -79,8 +87,10 @@ void drawParametricParabola(float a, float delta_theta, int quantity)
   ypoints[0]=0;
   for(int i=1; i<quantity; ++i)
   {
-    xpoints[i] = xpoints[i-1]+ypoints[i-1]*delta_theta+a*delta_theta;
+    xpoints[i] = xpoints[i-1]+ypoints[i-1]*delta_theta+a*delta_theta*delta_theta;
     ypoints[i] = ypoints[i-1]+2*a*delta_theta;
+    //println(xpoints[i] + "-" + ypoints[i]);
+    delay(1);
   }
   println("Час для обрахунку параметричного задання:"+(millis()-calculating_start_time));
   
@@ -100,8 +110,10 @@ void drawParametricParabola(float a, float delta_theta, int quantity)
     prev_x = cur_x;
     prev_y = cur_y;
     inverse_prev_y = inverse_cur_y;
+    delay(1);
   }
   println("Час для малювання параметричного задання:"+(millis()-drawing_start_time));
+  return xpoints;
 }
 
 
@@ -132,9 +144,10 @@ void setup()
   background(255, 255, 255);
   size(800,700);
   drawCoordinatePlot();
-  drawNotParametricParabola(1,1000);
-  drawParametricParabola(1,1,1000);
+  int size = 100;
+  float[] points = new float[size];
+  points = drawParametricParabola(1,0.33,size);
+  drawNotParametricParabola(1,size,points);
+  
   //drawNotParametricParabolaPrimitive(1);
-  //
-  //println("Час для обрахунку параметричного задання:"+0.13);
 }
