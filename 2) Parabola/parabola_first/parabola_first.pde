@@ -48,11 +48,11 @@ float[] drawParametricParabola(float a, float delta_theta, int quantity, float[]
     ypoints[i] = ypoints[i-1]+2*a*delta_theta;
     delay(1);
   }
-  println("Параметричні точки----------");
+  /*println("Параметричні точки----------");
   for(int i=0; i<5; ++i)
   {
     println(xpoints[i] + "-" + ypoints[i]);
-  }
+  }*/
   println("Час для обрахунку параметричного задання:"+(millis()-calculating_start_time));
   
   int drawing_start_time=millis();
@@ -86,11 +86,11 @@ void drawNotParametricParabola(float a, int quantity, float[] xpoints, float[] y
     ypoints[i] = 2*sqrt(a*xpoints[i]);
     delay(1);
   }
-  println("Непараметричні точки----------");
+  /*println("Непараметричні точки----------");
   for(int i=0; i<5; ++i)
   {
     println(xpoints[i] + "-" + ypoints[i]);
-  }
+  }*/
   println("Час для обрахунку непараметричного задання:"+(millis()-calculating_start_time));
   
   int drawing_start_time=millis();
@@ -141,33 +141,10 @@ float integral(float b, int quantity, float[] xpoints, float[] ypoints)
       break;
     }
   }
-  float h=(xpoints[count]-xpoints[0])/count;
-  float q=(ypoints[0]+ypoints[count])/2;
-  for(int i=0; i<count; ++i)
-  {
-    q+=ypoints[i];
-  }
-  return q*h;
-}
-
-float integral1(float b, int quantity, float[] xpoints, float[] ypoints)
-{
-  int count = 0;
-  for(int i=0; i<quantity; ++i)
-  {
-    if(xpoints[i]<=b)
-    {
-      ++count;
-    }
-    else
-    {
-      break;
-    }
-  }
   float q=0;
   for(int i=1; i<count; ++i)
   {
-    q+=ypoints[i]*(xpoints[i]-xpoints[i-1]);
+    q+=((ypoints[i]-((ypoints[i]-ypoints[i-1])/2))*(xpoints[i]-xpoints[i-1]));
   }
   return q;
 }
@@ -182,7 +159,7 @@ void setup()
   float[] xpoints = new float[size];
   float[] ypoints1 = new float[size];//Parametric
   float[] ypoints2 = new float[size];//Not parametric
-  drawParametricParabola(1,0.33,size,xpoints,ypoints1);
+  drawParametricParabola(1,0.35,size,xpoints,ypoints1);
   drawNotParametricParabola(1,size,xpoints,ypoints2);
   
   float[] norma_vec = new float[size];
