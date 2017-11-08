@@ -150,6 +150,28 @@ float integral(float b, int quantity, float[] xpoints, float[] ypoints)
   return q*h;
 }
 
+float integral1(float b, int quantity, float[] xpoints, float[] ypoints)
+{
+  int count = 0;
+  for(int i=0; i<quantity; ++i)
+  {
+    if(xpoints[i]<=b)
+    {
+      ++count;
+    }
+    else
+    {
+      break;
+    }
+  }
+  float q=0;
+  for(int i=1; i<count; ++i)
+  {
+    q+=ypoints[i]*(xpoints[i]-xpoints[i-1]);
+  }
+  return q;
+}
+
 void setup()
 {
   background(255, 255, 255);
