@@ -46,13 +46,13 @@ float[] drawParametricParabola(float a, float delta_theta, int quantity, float[]
   {
     xpoints[i] = xpoints[i-1]+ypoints[i-1]*delta_theta+a*delta_theta*delta_theta;
     ypoints[i] = ypoints[i-1]+2*a*delta_theta;
-    delay(1);
+    //delay(1);
   }
-  println("Параметричні точки----------");
+  /*println("Параметричні точки----------");
   for(int i=0; i<5; ++i)
   {
     println(xpoints[i] + "-" + ypoints[i]);
-  }
+  }*/
   println("Час для обрахунку параметричного задання:"+(millis()-calculating_start_time));
   
   int drawing_start_time=millis();
@@ -71,7 +71,7 @@ float[] drawParametricParabola(float a, float delta_theta, int quantity, float[]
     prev_x = cur_x;
     prev_y = cur_y;
     inverse_prev_y = inverse_cur_y;
-    delay(1);
+    //delay(1);
   }
   println("Час для малювання параметричного задання:"+(millis()-drawing_start_time));
   return xpoints;
@@ -84,12 +84,15 @@ void drawNotParametricParabola(float a, int quantity, float[] xpoints, float[] y
   for(int i=0; i<quantity; ++i)
   {
     ypoints[i] = 2*sqrt(a*xpoints[i]);
-    delay(1);
+    //delay(1);
   }
-  println("Непараметричні точки----------");
+  /*println("Непараметричні точки----------");
   for(int i=0; i<5; ++i)
   {
     println(xpoints[i] + "-" + ypoints[i]);
+  }*/
+  for(int i=0; i<2*quantity; ++i)
+  {
   }
   println("Час для обрахунку непараметричного задання:"+(millis()-calculating_start_time));
   
@@ -109,7 +112,7 @@ void drawNotParametricParabola(float a, int quantity, float[] xpoints, float[] y
     prev_x = cur_x;
     prev_y = cur_y;
     inverse_prev_y = inverse_cur_y;
-    delay(1);
+    //delay(1);
   }
   println("Час для малювання непараметричного задання:"+(millis()-drawing_start_time));
 }
@@ -141,33 +144,10 @@ float integral(float b, int quantity, float[] xpoints, float[] ypoints)
       break;
     }
   }
-  float h=(xpoints[count]-xpoints[0])/count;
-  float q=(ypoints[0]+ypoints[count])/2;
-  for(int i=0; i<count; ++i)
-  {
-    q+=ypoints[i];
-  }
-  return q*h;
-}
-
-float integral1(float b, int quantity, float[] xpoints, float[] ypoints)
-{
-  int count = 0;
-  for(int i=0; i<quantity; ++i)
-  {
-    if(xpoints[i]<=b)
-    {
-      ++count;
-    }
-    else
-    {
-      break;
-    }
-  }
   float q=0;
   for(int i=1; i<count; ++i)
   {
-    q+=ypoints[i]*(xpoints[i]-xpoints[i-1]);
+    q+=((ypoints[i]-((ypoints[i]-ypoints[i-1])/2))*(xpoints[i]-xpoints[i-1]));
   }
   return q;
 }
@@ -178,11 +158,11 @@ void setup()
   size(800,700);
   drawCoordinatePlot();
   
-  int size = 100;
+  int size = 1000000;
   float[] xpoints = new float[size];
   float[] ypoints1 = new float[size];//Parametric
   float[] ypoints2 = new float[size];//Not parametric
-  drawParametricParabola(1,0.33,size,xpoints,ypoints1);
+  drawParametricParabola(1,0.00001,size,xpoints,ypoints1);
   drawNotParametricParabola(1,size,xpoints,ypoints2);
   
   float[] norma_vec = new float[size];
@@ -199,7 +179,7 @@ void setup()
   println("Відсоткове співвідношення: "+norma_main*100+" %");
   
   float area_start_point = 0;
-  float area_end_point = 20;
+  float area_end_point = 9;
   stroke(0,255,0);
   line(width/2+area_start_point*15,0,width/2+area_start_point*15,height);
   line(width/2+area_end_point*15,0,width/2+area_end_point*15,height);
