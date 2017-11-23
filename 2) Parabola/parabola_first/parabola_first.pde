@@ -162,7 +162,11 @@ void setup()
   float[] xpoints = new float[size];
   float[] ypoints1 = new float[size];//Parametric
   float[] ypoints2 = new float[size];//Not parametric
+<<<<<<< HEAD
   drawParametricParabola(1,0.00001,size,xpoints,ypoints1);
+=======
+  drawParametricParabola(1,0.35,size,xpoints,ypoints1);
+>>>>>>> dd4732296c3955e7f3aca7e4be20f0ccfacc91f8
   drawNotParametricParabola(1,size,xpoints,ypoints2);
   
   float[] norma_vec = new float[size];
