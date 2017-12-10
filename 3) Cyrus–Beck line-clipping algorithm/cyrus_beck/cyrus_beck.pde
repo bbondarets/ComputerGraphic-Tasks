@@ -41,8 +41,8 @@ class point
   public point(){}
   public point(float _x, float _y)
   {
-    x=_x;
-    y=_y;
+    x=width/2+_x*15;
+    y=height/2-_y*15;
   }
 };
 
@@ -58,7 +58,8 @@ void drawPolygone(point[] polygone)
   beginShape();
   for(int i=0; i<polygone.length; ++i)
   {
-    vertex(polygone[i].x*15+width/2,height/2-polygone[i].y*15);
+    //vertex(polygone[i].x*15+width/2,height/2-polygone[i].y*15);
+    vertex(polygone[i].x,polygone[i].y);
   }
   endShape(CLOSE);
 }
@@ -101,7 +102,7 @@ void clip(point[] pol, point p1, point p2)
   pi.y = p1.y + (p2.y - p1.y)*t_enter;
   pl.x = p1.x + (p2.x - p1.x)*t_leave;
   pl.y = p1.y + (p2.y - p1.y)*t_leave;
-  stroke(0,255,0);
+  stroke(255,0,0);
   line(pi.x, pi.y, pl.x, pl.y);
 }
 
@@ -111,13 +112,13 @@ void setup()
   size(1000,900);
   drawCoordinatePlot();
   point[] test = new point[4];
-  test[0] = new point(0,0);
+  test[0] = new point(1,1);
   test[1] = new point(0,10);
   test[2] = new point(10,0);
   test[3] = test[0];
   drawPolygone(test);
-  point p1 = new point(width/2,height/2);
-  point p2 = new point(width/2+150,height/2-150);
+  point p1 = new point(0,0);
+  point p2 = new point(10,10);
   stroke(0,0,255);
   line(p1.x,p1.y,p2.x,p2.y);
   clip(test,p1,p2);
