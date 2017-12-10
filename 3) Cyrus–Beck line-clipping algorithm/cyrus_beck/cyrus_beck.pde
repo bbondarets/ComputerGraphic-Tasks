@@ -49,83 +49,81 @@ class point
   }
 };
 
-class poly
+class polygon
 {
    point[] points;
    int size;
    int priority;
-   public poly(){}
-   public poly(int _size)
+   
+   public polygon(int _size)
    {
      size = _size;
      points = new point[size+1];
    }
    
-}
+   public polygon(int _size, point[] _points)
+   {
+     size = _size;
+     points = _points;
+   }
+   
+   void drawPolygon()
+   {
+     stroke(0,0,0);
+     fill(249,255,1);
+     beginShape();
+     for(int i=0; i<size; ++i)
+     {
+       vertex(points[i].x, points[i].y);
+     }
+     endShape(CLOSE);
+   }
+   
+   boolean isConvex()
+   {
+      boolean got_negative = false;
+      boolean got_positive = false;
 
-void drawPolygone(point[] polygone)
-{
-  stroke(0,0,0);
-  fill(249,255,1);
-  beginShape();
-  for(int i=0; i<polygone.length; ++i)
-  {
-    vertex(polygone[i].x,polygone[i].y);
-  }
-  endShape(CLOSE);
-}
-
-float CrossProductLength(float Ax, float Ay, float Bx, float By, float Cx, float Cy)
+      int B, C;
+      for (int A = 0; A < size; A++)
+      {
+        B = (A + 1) % size;
+        C = (B + 1) % size;
+        
+        float BAx = points[A].ex - points[B].ex;
+        float BAy = points[A].ey - points[B].ey;
+        float BCx = points[C].ex - points[B].ex;
+        float BCy = points[C].ey - points[B].ey;
+        
+        float cross_product = BAx * BCy - BAy * BCx;
+        
+        if (cross_product < 0)
         {
-            // Get the vectors' coordinates.
-            float BAx = Ax - Bx;
-            float BAy = Ay - By;
-            float BCx = Cx - Bx;
-            float BCy = Cy - By;
-
-            // Calculate the Z coordinate of the cross product.
-            return (BAx * BCy - BAy * BCx);
+          got_negative = true;
         }
-
-boolean PolygoneIsConvex(point[] polygone)
-{
-    boolean got_negative = false;
-    boolean got_positive = false;
-    
-    int num_points = polygone.length;
-    int B, C;
-    for (int A = 0; A < num_points; A++)
-    {
-      B = (A + 1) % num_points;
-      C = (B + 1) % num_points;
-
-      float cross_product = CrossProductLength(polygone[A].ex, polygone[A].ey, polygone[B].ex, polygone[B].ey, polygone[C].ex, polygone[C].ey);
-      if (cross_product < 0)
-      {
-        got_negative = true;
+        else if (cross_product > 0)
+        {
+          got_positive = true;
+        }
+        if (got_negative && got_positive) return false;
       }
-      else if (cross_product > 0)
-      {
-        got_positive = true;
-      }
-      if (got_negative && got_positive) return false;
-    }
-    return true;
+      return true;
+   }
 }
 
-void clip(point[] pol, point p1, point p2, boolean inside)
+void clip(polygon poly, point p1, point p2, boolean inside)
 {
-  boolean isConvex = PolygoneIsConvex(pol);
+  boolean isConvex = poly.isConvex();
   println("Многокутник: "+((isConvex)?"опуклий":"неопуклий"));
   float t_enter = 0, t_leave = 1;
-  for (int i = 0; i<pol.length-1; i++)
+  for (int i = 0; i<poly.size; i++)
   {
     point n = new point();
-    n.x = (pol[i + 1].y - pol[i].y);
-    n.y = (pol[i + 1].x - pol[i].x);
+    n.x = (poly.points[i + 1].y - poly.points[i].y);
+    n.y = (poly.points[i + 1].x - poly.points[i].x);
     
     point pei = new point();
-    pei = pol[i];
+    pei = poly.points[i];
     float numerator = n.x*(pei.x - p1.x) - n.y*(pei.y - p1.y);
     float denominator = n.x*(p2.x - p1.x) + n.y*(p1.y - p2.y);
     float t=0;
@@ -160,7 +158,8 @@ void clip(point[] pol, point p1, point p2, boolean inside)
   pl.x = p1.x + (p2.x - p1.x)*t_leave;
   pl.y = p1.y + (p2.y - p1.y)*t_leave;
   
-  drawPolygone(pol);
+  //drawPolygone(pol);
+  poly.drawPolygon();
   
   println("Тип відсікання: "+((inside)?"внутрішнє":"зовнішнє"));
   if(inside)
@@ -171,7 +170,7 @@ void clip(point[] pol, point p1, point p2, boolean inside)
   else
   {
     background(255,255,255);
-    drawPolygone(pol);
+    poly.drawPolygon();
     stroke(255,0,0);
     line(p1.x,p1.y,pi.x,pi.y);
     line(p2.x,p2.y,pl.x,pl.y);
@@ -184,7 +183,7 @@ void setup()
 {
   background(255,255,255);
   size(1000,900);
-  /*
+  
   point[] test = new point[7];
   test[0] = new point(-5,-5);
   test[1] = new point(0,10);
@@ -193,18 +192,14 @@ void setup()
   test[4] = new point(14,5);
   test[5] = new point(10,0);
   test[6] = test[0];
-  */
-  point[] test = new point[4];
-  test[0] = new point(0,0);
-  test[1] = new point(0,10);
-  test[2] = new point(2,2);
-  test[3] = new point(10,0);
+  
+  polygon poly = new polygon(6,test);
   
   point p1 = new point(-10,-10);
-  point p2 = new point(3,21);
+  point p2 = new point(21,21);
   stroke(0,0,255);
   line(p1.x,p1.y,p2.x,p2.y);
-  clip(test,p1,p2,true);
+  clip(poly,p1,p2,true);
   stroke(0,0,0);
   drawCoordinatePlot();
 }
