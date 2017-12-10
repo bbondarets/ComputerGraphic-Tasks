@@ -110,13 +110,14 @@ void setup()
   background(255,255,255);
   size(1000,900);
   drawCoordinatePlot();
-  point[] test = new point[3];
+  point[] test = new point[4];
   test[0] = new point(0,0);
   test[1] = new point(0,10);
   test[2] = new point(10,0);
+  test[3] = test[0];
   drawPolygone(test);
-  point p1= new point(width/2,height/2);
-  point p2= new point(width/2+150,height/2-150);
+  point p1 = new point(width/2,height/2);
+  point p2 = new point(width/2+150,height/2-150);
   stroke(0,0,255);
   line(p1.x,p1.y,p2.x,p2.y);
   clip(test,p1,p2);
