@@ -147,9 +147,15 @@ float integral(float b, int quantity, float[] xpoints, float[] ypoints)
   float q=0;
   for(int i=1; i<count; ++i)
   {
-    q+=((ypoints[i]-((ypoints[i]-ypoints[i-1])/2))*(xpoints[i]-xpoints[i-1]));
+    //q+=((ypoints[i]-((ypoints[i]-ypoints[i-1])/2))*(xpoints[i]-xpoints[i-1]));
+    q+=(xpoints[i]-xpoints[i-1])*(ypoints[i]+ypoints[i-1])/2;
   }
   return q;
+}
+
+float integralFromPrimitive(float from, float to)
+{
+  return 4*pow(to,1.5)/3-4*pow(from,1.5)/3;
 }
 
 void setup()
@@ -162,11 +168,7 @@ void setup()
   float[] xpoints = new float[size];
   float[] ypoints1 = new float[size];//Parametric
   float[] ypoints2 = new float[size];//Not parametric
-<<<<<<< HEAD
-  drawParametricParabola(1,0.00001,size,xpoints,ypoints1);
-=======
-  drawParametricParabola(1,0.35,size,xpoints,ypoints1);
->>>>>>> dd4732296c3955e7f3aca7e4be20f0ccfacc91f8
+  drawParametricParabola(1,0.01,size,xpoints,ypoints1);
   drawNotParametricParabola(1,size,xpoints,ypoints2);
   
   float[] norma_vec = new float[size];
@@ -187,8 +189,10 @@ void setup()
   stroke(0,255,0);
   line(width/2+area_start_point*15,0,width/2+area_start_point*15,height);
   line(width/2+area_end_point*15,0,width/2+area_end_point*15,height);
+  float square = integralFromPrimitive(area_start_point,area_end_point);
   float parametric_integral = integral(area_end_point,size,xpoints,ypoints1);
   float notparametric_integral = integral(area_end_point,size,xpoints,ypoints2);
-  println("Площа параметричного задання: "+parametric_integral);
-  println("Площа непараметричного задання: "+notparametric_integral);
+  println("Точна площа параболи(отримана з первісної): "+square);
+  println("Площа параметричного задання: "+parametric_integral+" ("+abs(parametric_integral-square)+")");
+  println("Площа непараметричного задання: "+notparametric_integral+" ("+abs(notparametric_integral-square)+")");
 }
