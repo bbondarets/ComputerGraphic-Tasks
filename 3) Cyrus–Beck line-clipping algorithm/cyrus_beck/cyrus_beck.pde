@@ -71,45 +71,14 @@ class polygon
    void drawPolygon()
    {
      stroke(0,0,0);
-     fill(249,255,1);
+     //fill(255,244,0);
+     noFill();
      beginShape();
      for(int i=0; i<size; ++i)
      {
        vertex(points[i].x, points[i].y);
      }
      endShape(CLOSE);
-   }
-   
-   float GetAngle(float Ax, float Ay, float Bx, float By, float Cx, float Cy)
-   {
-            // Get the dot product.
-            float BAx = Ax - Bx;
-            float BAy = Ay - By;
-            float BCx = Cx - Bx;
-            float BCy = Cy - By;
-            float dot_product = (BAx * BCx + BAy * BCy);
-            
-            
-            BAx = Ax - Bx;
-            BAy = Ay - By;
-            BCx = Cx - Bx;
-            BCy = Cy - By;
-            // Get the cross product.
-            float cross_product = (BAx * BCy - BAy * BCx);
-
-            // Calculate the angle.
-            return (float)atan2(cross_product, dot_product);
-        }
-   
-   boolean pointInPolygon(float X, float Y)
-   {
-      int max_point = points.length - 1;
-      float total_angle = GetAngle(points[max_point].x, points[max_point].y,X, Y,points[0].x, points[0].y);
-      for (int i = 0; i < max_point; i++)
-      {
-         total_angle += GetAngle(points[i].x, points[i].y,X, Y,points[i + 1].x, points[i + 1].y);
-      }
-      return (abs(total_angle) > 0.000001);
    }
    
    boolean isConvex()
@@ -148,27 +117,32 @@ void clip(polygon poly, point p1, point p2, boolean inside)
 {
   boolean isConvex = poly.isConvex();
   println("Многокутник: "+((isConvex)?"опуклий":"неопуклий"));
+  poly.drawPolygon();
   if(isConvex)
   {
+    if(p1.x>p2.x)
+    {
+      point ex = p1;
+      p1 = p2;
+      p2 = ex;
+    }
     float tEnter = 0, tLeave = 1;
     for (int i = 0; i<poly.size; i++)
     {
-      point n = new point();
-      n.x = (poly.points[i].y - poly.points[i+1].y);
-      n.y = (poly.points[i + 1].x - poly.points[i].x);
+      point normal = new point();
+      normal.x = (poly.points[i].y - poly.points[i+1].y);
+      normal.y = (poly.points[i + 1].x - poly.points[i].x);
       
       point pei = poly.points[i];
-      line(n.x,n.y,pei.x,pei.y);
       
-      float numerator = n.x*(p1.x - pei.x) + n.y*(p1.y - pei.y);
-      float denominator = n.x*(p2.x - p1.x) + n.y*(p2.y - p1.y);
+      float numerator = normal.x*(p1.x - pei.x) + normal.y*(p1.y - pei.y);
+      float denominator = normal.x*(p2.x - p1.x) + normal.y*(p2.y - p1.y);
       
       float t=0;
       if (denominator != 0)
       {
         t = -numerator / denominator;
       }
-      
       //лінія паралельна бо denomanator==0
       else
       {
@@ -176,7 +150,6 @@ void clip(polygon poly, point p1, point p2, boolean inside)
         if(numerator < 0)
         {
           println("Вибачте1! Лінія за межами многокутника!");
-          poly.drawPolygon();
           return;
         }
         else
@@ -184,58 +157,77 @@ void clip(polygon poly, point p1, point p2, boolean inside)
           continue;
         }
       }
-
-      if(denominator > 0) //outside to inside case
-        {
-            tEnter = (tEnter>t)?tEnter:t;
-        }
-        else //den < 0, inside to outside case
-        {
-            tLeave = (tLeave<t)?tLeave:t;
-        }
-      
-      
+      //Ззовні в середину
+      if(denominator > 0)
+      {
+        tEnter = (tEnter>t)?tEnter:t;
+      }
+      //Зсередини на зовні
+      else
+      {
+        tLeave = (tLeave<t)?tLeave:t;
+      }
     }
     if(tEnter > tLeave)
     {
-        poly.drawPolygon();
         println("Вибачте2! Лінія за межами многокутника!");
-        //return;
+        return;
     }
-    println(tEnter,tLeave);
-    point pi = new point();
-    point pl = new point();
-    pi.x = p1.x + (p2.x - p1.x)*tEnter;
-    pi.y = p1.y + (p2.y - p1.y)*tEnter;
-    pl.x = p1.x + (p2.x - p1.x)*tLeave;
-    pl.y = p1.y + (p2.y - p1.y)*tLeave;
-  
-    poly.drawPolygon();
+
+    point startPoint = new point();
+    point endPoint = new point();
+    startPoint.x = p1.x + (p2.x - p1.x)*tEnter;
+    startPoint.y = p1.y + (p2.y - p1.y)*tEnter;
+    endPoint.x = p1.x + (p2.x - p1.x)*tLeave;
+    endPoint.y = p1.y + (p2.y - p1.y)*tLeave;
   
     println("Тип відсікання: "+((inside)?"внутрішнє":"зовнішнє"));
     if(inside)
     {
-      stroke(255,0,0);
-      line(pi.x, pi.y, pl.x, pl.y);
+      stroke(0,255,0);
+      line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
     else
     {
-      //background(255,255,255);
+      background(255,255,255);
       poly.drawPolygon();
+      stroke(0,255,0);
+      line(p1.x,p1.y,startPoint.x,startPoint.y);
+      line(p2.x,p2.y,endPoint.x,endPoint.y);
       stroke(255,0,0);
-      line(p1.x,p1.y,pi.x,pi.y);
-      line(p2.x,p2.y,pl.x,pl.y);
-      stroke(0,0,255);
-      line(pi.x, pi.y, pl.x, pl.y);
+      line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
   }
   else
   {
-    //background(255,255,255);
-    poly.drawPolygon();
+    stroke(255,0,0);
     line(p1.x,p1.y,p2.x,p2.y);
     println("Будьласка задайте опуклий многокутник!!!!");
   }
+}
+
+void clipFiguresByPriority(polygon[] polygones, point p1, point p2)
+{
+  int maxPriorityIndex = 0;
+  int maxPriority = polygones[0].priority;
+  for(int i=1; i<polygones.length; ++i)
+  {
+    if(polygones[i].priority>maxPriority)
+    {
+      maxPriorityIndex = i;
+      maxPriority = polygones[i].priority;
+    }
+  }
+  for(int i=0; i<polygones.length; ++i)
+  {
+    if(i!=maxPriorityIndex)
+    {
+      polygones[i].drawPolygon();
+    }
+  }
+  stroke(255,0,0);
+  line(p1.x,p1.y,p2.x,p2.y);
+  clip(polygones[maxPriorityIndex],p1,p2,true);
 }
 
 void setup()
@@ -243,6 +235,7 @@ void setup()
   background(255,255,255);
   size(1000,900);
   
+  /*
   point[] test = new point[7];
   test[0] = new point(-5,-5);
   test[1] = new point(0,10);
@@ -251,28 +244,47 @@ void setup()
   test[4] = new point(14,5);
   test[5] = new point(10,0);
   test[6] = test[0];
-
-  
-  point[] test1 = new point[4];
-  test1[0] = new point(0,0);
-  test1[1] = new point(0,6);
-  test1[2] = new point(6,0);
-  test1[3] = test1[0];
-  
   polygon poly = new polygon(6,test,1);
-  polygon poly1 = new polygon(3,test1,2);
   
-  //point p1 = new point(-30,0);
-  //point p2 = new point(20,5);
-  //point p1 = new point(0,0);
-  //point p2 = new point(9,9);
-  point p1 = new point(7,7);
-  point p2 = new point(17,17);
-  stroke(0,0,255);
+  point p1 = new point(0,0);
+  point p2 = new point(10,10);
+  
+  stroke(255,0,0);
   line(p1.x,p1.y,p2.x,p2.y);
-  //clip(poly,p1,p2,true);
+  clip(poly,p1,p2,true);
+  */
   
-  clip(poly1,p1,p2,true);
+  
+  point[] hex1 = new point[7];
+  hex1[0] = new point(-5,2);
+  hex1[1] = new point(0,2);
+  hex1[2] = new point(2,-3);
+  hex1[3] = new point(0,-7);
+  hex1[4] = new point(-5,-7);
+  hex1[5] = new point(-7,-3);
+  hex1[6] = hex1[0];
+  
+  point[] hex2 = new point[8];
+  hex2[0] = new point(-2,0);
+  hex2[1] = new point(-2,5);
+  hex2[2] = new point(0,7);
+  hex2[3] = new point(4,8);
+  hex2[4] = new point(8,6);
+  hex2[5] = new point(7,0);
+  hex2[6] = new point(0,-2);
+  hex2[7] = hex2[0];
+  
+  polygon[] hexagones = new polygon[2];
+  hexagones[0] = new polygon(6,hex1,2);
+  hexagones[1] = new polygon(7,hex2,1);
+  
+  point start = new point(-8,-6);
+  point end = new point(13,8);
+  stroke(255,0,0);
+  line(start.x,start.y,end.x,end.y);
+  clipFiguresByPriority(hexagones,start,end);
+  
+  //Coordinates
   stroke(0,0,0);
   drawCoordinatePlot();
 }

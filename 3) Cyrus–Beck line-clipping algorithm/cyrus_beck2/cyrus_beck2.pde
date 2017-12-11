@@ -80,6 +80,38 @@ class polygon
      endShape(CLOSE);
    }
    
+   float GetAngle(float Ax, float Ay, float Bx, float By, float Cx, float Cy)
+   {
+            // Get the dot product.
+            float BAx = Ax - Bx;
+            float BAy = Ay - By;
+            float BCx = Cx - Bx;
+            float BCy = Cy - By;
+            float dot_product = (BAx * BCx + BAy * BCy);
+            
+            
+            BAx = Ax - Bx;
+            BAy = Ay - By;
+            BCx = Cx - Bx;
+            BCy = Cy - By;
+            // Get the cross product.
+            float cross_product = (BAx * BCy - BAy * BCx);
+
+            // Calculate the angle.
+            return (float)atan2(cross_product, dot_product);
+        }
+   
+   boolean pointInPolygon(float X, float Y)
+   {
+      int max_point = points.length - 1;
+      float total_angle = GetAngle(points[max_point].x, points[max_point].y,X, Y,points[0].x, points[0].y);
+      for (int i = 0; i < max_point; i++)
+      {
+         total_angle += GetAngle(points[i].x, points[i].y,X, Y,points[i + 1].x, points[i + 1].y);
+      }
+      return (abs(total_angle) > 0.000001);
+   }
+   
    boolean isConvex()
    {
       boolean got_negative = false;
@@ -149,7 +181,7 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     point boundaryPoint = poly.points[0];
     float tEnter = 0;
     float tLeave = 1;
-    for (int i = 0; i<poly.size; i++)
+    for (int i = 0; i<poly.size; ++i)
     {
         point p = poly.points[i];
         point q = poly.points[i+1];
@@ -158,9 +190,9 @@ void clip(polygon poly, point p1, point p2, boolean inside)
         point w = new point(p1.x-p.x, p1.y - p.y);
         float num = dotProduct(w, n);
         float den = dotProduct(D, n);
-        if(den == 0)
+        if(den == 0) //line and edge are parallel
         {
-            if(num < 0)
+            if(num < 0) //w.n<0  -> point/line outside coz P(t) outside polygon
             {
                 return;
             }
@@ -190,7 +222,7 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     float x2 = p1.x + delX * tLeave;
     float y2 = p1.y + delY * tLeave;
     stroke(255,0,0);
-    println(x1+" "+x1+" "+x2+" "+y2);
+    println(x1+" "+y1+" "+x2+" "+y2);
     line(x1,y1,x2,y2);
 }
 

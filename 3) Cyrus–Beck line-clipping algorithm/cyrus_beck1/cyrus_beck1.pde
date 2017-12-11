@@ -165,7 +165,7 @@ void clip(polygon poly, point p1, point p2, boolean inside)
       float t=0;
       if (denominator != 0)
       {
-        t = (numerator / denominator);
+        t = -(numerator / denominator);
         println("t="+t);
       }
       //лінія паралельна бо denomanator==0
@@ -198,8 +198,9 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     {
       poly.drawPolygon();
       println("FUCK");
-      return;
+      //return;
     }
+    
 
     point pi = new point();
     point pl = new point();
@@ -266,7 +267,7 @@ void setup()
   //point p1 = new point(0,0);
   //point p2 = new point(9,9);
   point p1 = new point(0,0);
-  point p2 = new point(7,7);
+  point p2 = new point(17,17);
   stroke(0,0,255);
   line(p1.x,p1.y,p2.x,p2.y);
   //clip(poly,p1,p2,true);
