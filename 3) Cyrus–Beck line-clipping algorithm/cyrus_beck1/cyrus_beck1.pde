@@ -154,28 +154,27 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     for (int i = 0; i<poly.size; i++)
     {
       point n = new point();
-      n.x = (poly.points[i].y - poly.points[i+1].y);
+      n.x = (poly.points[i + 1].y - poly.points[i].y);
       n.y = (poly.points[i + 1].x - poly.points[i].x);
       
       point pei = poly.points[i];
-      line(n.x,n.y,pei.x,pei.y);
       
-      float numerator = n.x*(p1.x - pei.x) + n.y*(p1.y - pei.y);
-      float denominator = n.x*(p2.x - p1.x) + n.y*(p2.y - p1.y);
+      float numerator = n.x*(pei.x - p1.x) - n.y*(pei.y - p1.y);
+      float denominator = n.x*(p2.x - p1.x) + n.y*(p1.y - p2.y);
       
       float t=0;
       if (denominator != 0)
       {
-        t = -numerator / denominator;
+        t = (numerator / denominator);
+        println("t="+t);
       }
-      
       //лінія паралельна бо denomanator==0
       else
       {
         println("Лінія паралельна!");
         if(numerator < 0)
         {
-          println("Вибачте1! Лінія за межами многокутника!");
+          println("Вибачте! Лінія за межами вікна!");
           poly.drawPolygon();
           return;
         }
@@ -184,25 +183,24 @@ void clip(polygon poly, point p1, point p2, boolean inside)
           continue;
         }
       }
-
       if(denominator > 0) //outside to inside case
-        {
-            tEnter = (tEnter>t)?tEnter:t;
-        }
-        else //den < 0, inside to outside case
-        {
-            tLeave = (tLeave<t)?tLeave:t;
-        }
-      
+      {
+         tEnter = (tEnter>t)?tEnter:t;
+      }
+      else //den < 0, inside to outside case
+      {
+         tLeave = (tLeave<t)?tLeave:t;
+      }
+      println("enter: "+tEnter+" leave:"+tLeave);
       
     }
     if(tEnter > tLeave)
     {
-        poly.drawPolygon();
-        println("Вибачте2! Лінія за межами многокутника!");
-        //return;
+      poly.drawPolygon();
+      println("FUCK");
+      return;
     }
-    println(tEnter,tLeave);
+
     point pi = new point();
     point pl = new point();
     pi.x = p1.x + (p2.x - p1.x)*tEnter;
@@ -216,6 +214,7 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     if(inside)
     {
       stroke(255,0,0);
+      println(pi.x+" "+pi.y+" "+pl.x+" "+pl.y);
       line(pi.x, pi.y, pl.x, pl.y);
     }
     else
@@ -266,8 +265,8 @@ void setup()
   //point p2 = new point(20,5);
   //point p1 = new point(0,0);
   //point p2 = new point(9,9);
-  point p1 = new point(7,7);
-  point p2 = new point(17,17);
+  point p1 = new point(0,0);
+  point p2 = new point(7,7);
   stroke(0,0,255);
   line(p1.x,p1.y,p2.x,p2.y);
   //clip(poly,p1,p2,true);

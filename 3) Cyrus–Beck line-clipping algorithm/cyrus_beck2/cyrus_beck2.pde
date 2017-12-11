@@ -80,38 +80,6 @@ class polygon
      endShape(CLOSE);
    }
    
-   float GetAngle(float Ax, float Ay, float Bx, float By, float Cx, float Cy)
-   {
-            // Get the dot product.
-            float BAx = Ax - Bx;
-            float BAy = Ay - By;
-            float BCx = Cx - Bx;
-            float BCy = Cy - By;
-            float dot_product = (BAx * BCx + BAy * BCy);
-            
-            
-            BAx = Ax - Bx;
-            BAy = Ay - By;
-            BCx = Cx - Bx;
-            BCy = Cy - By;
-            // Get the cross product.
-            float cross_product = (BAx * BCy - BAy * BCx);
-
-            // Calculate the angle.
-            return (float)atan2(cross_product, dot_product);
-        }
-   
-   boolean pointInPolygon(float X, float Y)
-   {
-      int max_point = points.length - 1;
-      float total_angle = GetAngle(points[max_point].x, points[max_point].y,X, Y,points[0].x, points[0].y);
-      for (int i = 0; i < max_point; i++)
-      {
-         total_angle += GetAngle(points[i].x, points[i].y,X, Y,points[i + 1].x, points[i + 1].y);
-      }
-      return (abs(total_angle) > 0.000001);
-   }
-   
    boolean isConvex()
    {
       boolean got_negative = false;
@@ -144,48 +112,66 @@ class polygon
    }
 }
 
+float dotProduct(point p1, point p2)
+{
+    return p1.x*p2.x + p1.y*p2.y;
+}
+
+point getInsideNormal(point p1, point p2, point z)
+{
+    float delX = p2.x - p1.x;
+    float delY = p2.y - p1.y;
+    point n = new point(-delY, delX);
+    point v = new point(z.x-p1.x, z.y-p1.y);
+    float dot = dotProduct(v,n);
+    if(dot==0)
+    {
+        //printf("Error - 3 collinear points along polygon\n");
+        //delay(2000);
+        //exit(0);
+    }
+    if(dot < 0) //outside normal
+    {
+        n.x*=-1;
+        n.y*=-1;
+    }
+    return n;
+}
+
 void clip(polygon poly, point p1, point p2, boolean inside)
 {
-  boolean isConvex = poly.isConvex();
-  println("Многокутник: "+((isConvex)?"опуклий":"неопуклий"));
-  if(isConvex)
-  {
-    float tEnter = 0, tLeave = 1;
+    float delX = p2.x - p1.x;
+    float delY = p2.y - p1.y;
+    //vector D = Direction vector
+    point D = new point(delX, delY);
+
+    //iterate over edges of polygon
+    point boundaryPoint = poly.points[0];
+    float tEnter = 0;
+    float tLeave = 1;
     for (int i = 0; i<poly.size; i++)
     {
-      point n = new point();
-      n.x = (poly.points[i].y - poly.points[i+1].y);
-      n.y = (poly.points[i + 1].x - poly.points[i].x);
-      
-      point pei = poly.points[i];
-      line(n.x,n.y,pei.x,pei.y);
-      
-      float numerator = n.x*(p1.x - pei.x) + n.y*(p1.y - pei.y);
-      float denominator = n.x*(p2.x - p1.x) + n.y*(p2.y - p1.y);
-      
-      float t=0;
-      if (denominator != 0)
-      {
-        t = -numerator / denominator;
-      }
-      
-      //лінія паралельна бо denomanator==0
-      else
-      {
-        println("Лінія паралельна!");
-        if(numerator < 0)
-        {
-          println("Вибачте1! Лінія за межами многокутника!");
-          poly.drawPolygon();
-          return;
-        }
-        else
-        {
-          continue;
-        }
-      }
+        point p = poly.points[i];
+        point q = poly.points[i+1];
+        point n = getInsideNormal(p,q,boundaryPoint);
 
-      if(denominator > 0) //outside to inside case
+        point w = new point(p1.x-p.x, p1.y - p.y);
+        float num = dotProduct(w, n);
+        float den = dotProduct(D, n);
+        if(den == 0)
+        {
+            if(num < 0)
+            {
+                return;
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        float t = -num/den;
+        if(den > 0) //outside to inside case
         {
             tEnter = (tEnter>t)?tEnter:t;
         }
@@ -193,49 +179,19 @@ void clip(polygon poly, point p1, point p2, boolean inside)
         {
             tLeave = (tLeave<t)?tLeave:t;
         }
-      
-      
+        boundaryPoint = p;
     }
     if(tEnter > tLeave)
     {
-        poly.drawPolygon();
-        println("Вибачте2! Лінія за межами многокутника!");
-        //return;
+        return;
     }
-    println(tEnter,tLeave);
-    point pi = new point();
-    point pl = new point();
-    pi.x = p1.x + (p2.x - p1.x)*tEnter;
-    pi.y = p1.y + (p2.y - p1.y)*tEnter;
-    pl.x = p1.x + (p2.x - p1.x)*tLeave;
-    pl.y = p1.y + (p2.y - p1.y)*tLeave;
-  
-    poly.drawPolygon();
-  
-    println("Тип відсікання: "+((inside)?"внутрішнє":"зовнішнє"));
-    if(inside)
-    {
-      stroke(255,0,0);
-      line(pi.x, pi.y, pl.x, pl.y);
-    }
-    else
-    {
-      //background(255,255,255);
-      poly.drawPolygon();
-      stroke(255,0,0);
-      line(p1.x,p1.y,pi.x,pi.y);
-      line(p2.x,p2.y,pl.x,pl.y);
-      stroke(0,0,255);
-      line(pi.x, pi.y, pl.x, pl.y);
-    }
-  }
-  else
-  {
-    //background(255,255,255);
-    poly.drawPolygon();
-    line(p1.x,p1.y,p2.x,p2.y);
-    println("Будьласка задайте опуклий многокутник!!!!");
-  }
+    float x1 = p1.x + delX * tEnter;
+    float y1 = p1.y + delY * tEnter;
+    float x2 = p1.x + delX * tLeave;
+    float y2 = p1.y + delY * tLeave;
+    stroke(255,0,0);
+    println(x1+" "+x1+" "+x2+" "+y2);
+    line(x1,y1,x2,y2);
 }
 
 void setup()
@@ -266,12 +222,12 @@ void setup()
   //point p2 = new point(20,5);
   //point p1 = new point(0,0);
   //point p2 = new point(9,9);
-  point p1 = new point(7,7);
-  point p2 = new point(17,17);
+  point p1 = new point(0,0);
+  point p2 = new point(7,7);
   stroke(0,0,255);
   line(p1.x,p1.y,p2.x,p2.y);
   //clip(poly,p1,p2,true);
-  
+  poly1.drawPolygon();
   clip(poly1,p1,p2,true);
   stroke(0,0,0);
   drawCoordinatePlot();
