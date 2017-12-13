@@ -185,6 +185,7 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     if(inside)
     {
       stroke(0,255,0);
+      strokeWeight(2);
       line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
     else
@@ -246,12 +247,22 @@ void setup()
   test[6] = test[0];
   polygon poly = new polygon(6,test,1);
   
-  point p1 = new point(0,0);
-  point p2 = new point(10,10);
+  point p1 = new point(-6,-3);
+  point p2 = new point(17,10);
+  
+  point p3 = new point(0,-9);
+  point p4 = new point(15,5);
+  
+  point p5 = new point(-5,-18);
+  point p6 = new point(20,3);
   
   stroke(255,0,0);
   line(p1.x,p1.y,p2.x,p2.y);
-  clip(poly,p1,p2,true);
+  line(p3.x,p3.y,p4.x,p4.y);
+  line(p5.x,p5.y,p6.x,p6.y);
+  clip(poly,p1,p2,false);
+  clip(poly,p3,p4,true);
+  clip(poly,p5,p6,true);
   */
   
   
@@ -274,9 +285,16 @@ void setup()
   hex2[6] = new point(0,-2);
   hex2[7] = hex2[0];
   
-  polygon[] hexagones = new polygon[2];
+  point[] hex3 = new point[4];
+  hex3[0] = new point(6,0);
+  hex3[1] = new point(-10,4);
+  hex3[2] = new point(4,10);
+  hex3[3] = hex3[0];
+  
+  polygon[] hexagones = new polygon[3];
   hexagones[0] = new polygon(6,hex1,2);
-  hexagones[1] = new polygon(7,hex2,1);
+  hexagones[1] = new polygon(7,hex2,3);
+  hexagones[2] = new polygon(3,hex3,1);
   
   point start = new point(-8,-6);
   point end = new point(13,8);
