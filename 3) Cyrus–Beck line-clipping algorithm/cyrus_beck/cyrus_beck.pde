@@ -71,8 +71,8 @@ class polygon
    void drawPolygon()
    {
      stroke(0,0,0);
-     //fill(255,244,0);
-     noFill();
+     fill(255,244,0);
+     //noFill();
      beginShape();
      for(int i=0; i<size; ++i)
      {
@@ -185,7 +185,7 @@ void clip(polygon poly, point p1, point p2, boolean inside)
     if(inside)
     {
       stroke(0,255,0);
-      strokeWeight(2);
+      //strokeWeight(2);
       line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
     else
@@ -236,7 +236,7 @@ void setup()
   background(255,255,255);
   size(1000,900);
   
-  /*
+  
   point[] test = new point[7];
   test[0] = new point(-5,-5);
   test[1] = new point(0,10);
@@ -247,8 +247,8 @@ void setup()
   test[6] = test[0];
   polygon poly = new polygon(6,test,1);
   
-  point p1 = new point(-6,-3);
-  point p2 = new point(17,10);
+  point p1 = new point(-19,-8);
+  point p2 = new point(20,8);
   
   point p3 = new point(0,-9);
   point p4 = new point(15,5);
@@ -258,14 +258,12 @@ void setup()
   
   stroke(255,0,0);
   line(p1.x,p1.y,p2.x,p2.y);
-  line(p3.x,p3.y,p4.x,p4.y);
-  line(p5.x,p5.y,p6.x,p6.y);
-  clip(poly,p1,p2,false);
-  clip(poly,p3,p4,true);
-  clip(poly,p5,p6,true);
-  */
+  //line(p3.x,p3.y,p4.x,p4.y);
+  //line(p5.x,p5.y,p6.x,p6.y);
+  clip(poly,p1,p2,true);
   
   
+  /*
   point[] hex1 = new point[7];
   hex1[0] = new point(-5,2);
   hex1[1] = new point(0,2);
@@ -301,7 +299,7 @@ void setup()
   stroke(255,0,0);
   line(start.x,start.y,end.x,end.y);
   clipFiguresByPriority(hexagones,start,end);
-  
+  */
   //Coordinates
   stroke(0,0,0);
   drawCoordinatePlot();
